@@ -1,53 +1,54 @@
-import Card from "../components/Card";
-import "./Dashboard.css";
-
-const handleConnect = async () => {
-  try {
-    await window.electronAPI.spotify.login();
-
-    console.log("Spotify connected!");
-
-    const track = await window.electronAPI.spotify.getCurrentTrack();
-
-    if (track) {
-      console.log("Current track:", track);
-    } else {
-      console.log("No track is currently playing.");
-    }
-  } catch (error) {
-    console.error("Spotify connection failed:", error);
-  }
-};
+import { useState } from "react";
+import { useCurrentTrack } from "../../hooks/useCurrentTrack";
 
 export default function Dashboard() {
+  const [connected, setConnected] = useState(false);
+
+  const { track, loading, error } = useCurrentTrack(connected);
+
+  const handleConnect = async () => {
+    try {
+      await window.electronAPI.spotify.login();
+
+      setConnected(true);
+    } catch (error) {
+      console.error("Spotify connection failed:", error);
+    }
+  };
+
   return (
-    <div className="dashboard">
-      <div className="header">
-        <h1>Dashboard</h1>
-        <button className="spotifyButton" onClick={handleConnect}>
-          Connect Spotify
-        </button>
-      </div>
+    <main>
+      <h1>Spotify AutoEQ</h1>
 
-      <div className="cards">
-        <Card title="Now Playing">
-          <h2>Cherry Waves</h2>
-          <p>Deftones</p>
-          <small>Saturday Night Wrist</small>
-        </Card>
+      {!connected && <button onClick={handleConnect}>Connect Spotify</button>}
 
-        <Card title="Active Preset">
-          <h2>Airy Shoegaze</h2>
-          <p>Automatically selected.</p>
-        </Card>
+      {connected && (
+        <section>
+          <p>Spotify connected</p>
 
-        <Card title="AutoEQ">
-          <label className="toggle">
-            <input type="checkbox" defaultChecked />
-            Enabled
-          </label>
-        </Card>
-      </div>
-    </div>
+          {loading && <p>Checking playback...</p>}
+
+          {error && <p>{error}</p>}
+
+          {track && (
+            <div>
+              {track.image && (
+                <img src={track.image} alt={track.album} width={200} />
+              )}
+
+              <h2>{track.title}</h2>
+
+              <p>{track.artist}</p>
+
+              <p>{track.album}</p>
+
+              <p>{track.isPlaying ? "Playing" : "Paused"}</p>
+            </div>
+          )}
+
+          {!loading && !track && <p>Nothing is currently playing.</p>}
+        </section>
+      )}
+    </main>
   );
 }

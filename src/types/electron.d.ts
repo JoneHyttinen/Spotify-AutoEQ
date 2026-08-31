@@ -1,6 +1,4 @@
-import type { Track } from "../types/track.ts";
-
-export {};
+import type { Track } from "./track.ts";
 
 declare global {
   interface Window {

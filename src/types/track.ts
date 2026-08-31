@@ -5,5 +5,6 @@ export interface Track {
   album: string;
   duration: number;
   progress: number;
+  isPlaying: boolean;
   image?: string;
 }
