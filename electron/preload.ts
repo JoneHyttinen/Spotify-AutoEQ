@@ -1,11 +1,19 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from "electron";
 
-const electronAPI = {
+console.log("Spotify AutoEQ preload loaded");
+
+contextBridge.exposeInMainWorld("electronAPI", {
   platform: process.platform,
 
   spotify: {
-    getCurrentTrack: () => ipcRenderer.invoke('spotify:get-current-track'),
-  },
-}
+    login: () => {
+      console.log("IPC: spotify:login");
 
-contextBridge.exposeInMainWorld('electronAPI', electronAPI)
+      return ipcRenderer.invoke("spotify:login");
+    },
+
+    getCurrentTrack: () => {
+      return ipcRenderer.invoke("spotify:get-current-track");
+    },
+  },
+});

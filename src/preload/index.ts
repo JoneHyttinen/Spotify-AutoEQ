@@ -1,10 +1,10 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   platform: process.platform,
 
   spotify: {
-    getCurrentTrack: () =>
-      ipcRenderer.invoke('spotify:get-current-track')
-  }
-})
+    login: () => ipcRenderer.invoke("spotify:login"),
+    getCurrentTrack: () => ipcRenderer.invoke("spotify:get-current-track"),
+  },
+});
