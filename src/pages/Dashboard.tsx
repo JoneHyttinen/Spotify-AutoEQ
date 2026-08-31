@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCurrentTrack } from "../../hooks/useCurrentTrack";
+import { useCurrentTrack } from "../hooks/useCurrentTrack";
 
 export default function Dashboard() {
   const [connected, setConnected] = useState(false);
